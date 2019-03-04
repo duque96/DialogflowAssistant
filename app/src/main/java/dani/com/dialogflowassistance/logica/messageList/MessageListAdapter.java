@@ -1,23 +1,28 @@
 package dani.com.dialogflowassistance.logica.messageList;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.cloud.dialogflow.v2.Intent;
+
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import dani.com.dialogflowassistance.R;
+import dani.com.dialogflowassistance.logica.async.AsyncImageLoad;
 import dani.com.dialogflowassistance.logica.model.Message;
 import dani.com.dialogflowassistance.logica.model.SendBird;
 import dani.com.dialogflowassistance.logica.util.Utils;
 
 public class MessageListAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
-    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
+    private static final int VIEW_TYPE_CARD_MESSAGE = 2;
+    private static final int VIEW_TYPE_TEXT_MESSAGE = 3;
 
     private List<Message> mMessageList;
 
@@ -39,8 +44,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             // If the current user is the sender of the message
             return VIEW_TYPE_MESSAGE_SENT;
         } else {
-            // If some other user sent the message
-            return VIEW_TYPE_MESSAGE_RECEIVED;
+            if (message.getType().equals(Intent.Message.MessageCase.CARD)){
+                return VIEW_TYPE_CARD_MESSAGE;
+            } else {
+                return VIEW_TYPE_TEXT_MESSAGE;
+            }
         }
     }
 
@@ -55,9 +63,16 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                     .inflate(R.layout.item_message_sent, parent, false);
             return new SentMessageHolder(view);
         } else {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_message_received, parent, false);
-            return new ReceivedMessageHolder(view);
+            if (viewType == VIEW_TYPE_CARD_MESSAGE) {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_message_received_card, parent, false);
+                return new ReceivedCardMessageHolder(view);
+            } else {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_message_received_text, parent, false);
+                return new ReceivedTextMessageHolder(view);
+            }
+
         }
     }
 
@@ -70,8 +85,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             case VIEW_TYPE_MESSAGE_SENT:
                 ((SentMessageHolder) holder).bind(message);
                 break;
-            case VIEW_TYPE_MESSAGE_RECEIVED:
-                ((ReceivedMessageHolder) holder).bind(message);
+            case VIEW_TYPE_CARD_MESSAGE:
+                ((ReceivedCardMessageHolder) holder).bind(message);
+                break;
+            case VIEW_TYPE_TEXT_MESSAGE:
+                ((ReceivedTextMessageHolder) holder).bind(message);
+                break;
         }
     }
 
@@ -93,11 +112,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
     }
 
-    private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
+    private class ReceivedTextMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, nameText;
         ImageView profileImage;
 
-        ReceivedMessageHolder(View itemView) {
+        ReceivedTextMessageHolder(View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.text_message_body);
@@ -108,6 +127,42 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         void bind(Message message) {
             messageText.setText(message.getMessage());
+
+            // Format the stored timestamp into a readable String using method.
+            timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
+
+            nameText.setText(message.getSender().getNickname());
+
+            // Insert the profile image from the URL into the ImageView.
+//            Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
+        }
+    }
+
+    private class ReceivedCardMessageHolder extends RecyclerView.ViewHolder {
+        TextView title, subtitle, timeText, nameText;
+        Button button;
+        ImageView image;
+
+        ReceivedCardMessageHolder(View itemView) {
+            super(itemView);
+
+            title = itemView.findViewById(R.id.card_title);
+            subtitle = itemView.findViewById(R.id.card_subtitle);
+            button = itemView.findViewById(R.id.card_button);
+            timeText = itemView.findViewById(R.id.card_message_time);
+            nameText = itemView.findViewById(R.id.card_message_name);
+            image = itemView.findViewById(R.id.card_image);
+        }
+
+        void bind(Message message) {
+            title.setText(message.getTitle());
+            subtitle.setText(message.getSubtitle());
+            button.setText(message.getButton());
+
+            String [] extras = {message.getApp(), message.getUri()};
+            button.setTag(extras);
+
+            new AsyncImageLoad(image).execute(message.getImageURL());
 
             // Format the stored timestamp into a readable String using method.
             timeText.setText(Utils.formatDateTime(message.getCreatedAt()));

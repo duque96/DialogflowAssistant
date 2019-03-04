@@ -4,12 +4,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.api.gax.core.FixedCredentialsProvider;
@@ -22,20 +18,29 @@ import com.google.cloud.dialogflow.v2.SessionsClient;
 import com.google.cloud.dialogflow.v2.SessionsSettings;
 import com.google.cloud.dialogflow.v2.TextInput;
 
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import dani.com.dialogflowassistance.R;
 import dani.com.dialogflowassistance.logica.async.AsyncDialogflow;
+import dani.com.dialogflowassistance.logica.externalApps.ExternalAppManage;
 import dani.com.dialogflowassistance.logica.messageList.MessageListAdapter;
 import dani.com.dialogflowassistance.logica.model.Message;
 import dani.com.dialogflowassistance.logica.model.SendBird;
+import dani.com.dialogflowassistance.logica.model.TextMessage;
 import dani.com.dialogflowassistance.logica.model.User;
 import dani.com.dialogflowassistance.logica.model.UserDialogflow;
 import dani.com.dialogflowassistance.logica.model.UserSender;
+import dani.com.dialogflowassistance.logica.responseType.ResponseTypeManager;
 import dani.com.dialogflowassistance.logica.speech.Speaker;
 import dani.com.dialogflowassistance.logica.speech.SpeechToText;
 
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_chat);
 
+        getSupportActionBar().hide();
 
         reconigzer = new SpeechToText(this);
         tts = new Speaker();
@@ -126,21 +132,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void callbackDialogflow(DetectIntentResponse response) {
         if (response != null) {
-            String responseText;
-            if (response.getQueryResult().getFulfillmentText().isEmpty())
-                responseText = response.getQueryResult().getFulfillmentMessages(0).getText()
-                        .getText(0);
-            else
-                responseText = response.getQueryResult().getFulfillmentText();
-            createAssistantMessage(responseText);
-            textToSpeech(responseText);
+            ResponseTypeManager responseTypeManager =
+                    new ResponseTypeManager(response.getQueryResult(), getApplicationContext(),
+                            messageList, assistant);
+            responseTypeManager.createResponse();
+
+            int newMsgPosition = messageList.size() - 1;
+
+            // Notify recycler view insert one new data.
+            mMessageAdapter.notifyItemInserted(newMsgPosition);
+
+            // Scroll RecyclerView to the last message.
+            mMessageRecycler.scrollToPosition(newMsgPosition);
+
         } else {
             Toast.makeText(this, "Error de comunicación", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void textToSpeech(String text) {
-        tts.speak(text, this);
     }
 
     private void validar() {
@@ -156,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createSendMessage(String text) {
-        messageList.add(new Message(currentUser, text.substring(0, 1).toUpperCase() + text
+        messageList.add(new TextMessage(currentUser, text.substring(0, 1).toUpperCase() + text
                 .substring(1)));
 
         int newMsgPosition = messageList.size() - 1;
@@ -168,17 +175,9 @@ public class MainActivity extends AppCompatActivity {
         mMessageRecycler.scrollToPosition(newMsgPosition);
     }
 
-    private void createAssistantMessage(String text) {
-        messageList.add(new Message(assistant, text));
-
-        int newMsgPosition = messageList.size() - 1;
-
-        // Notify recycler view insert one new data.
-        mMessageAdapter.notifyItemInserted(newMsgPosition);
-
-        // Scroll RecyclerView to the last message.
-        mMessageRecycler.scrollToPosition(newMsgPosition);
+    public void displayApp(View view) {
+        ExternalAppManage app = new ExternalAppManage();
+        app.display((String[])view.getTag(), getApplicationContext());
     }
-
 }
 
