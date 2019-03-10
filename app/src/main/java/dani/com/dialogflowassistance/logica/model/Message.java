@@ -11,17 +11,5 @@ public interface Message {
 
     Intent.Message.MessageCase getType();
 
-    String getMessage();
-
-    String getTitle();
-
-    String getSubtitle();
-
-    String getButton();
-
-    String getImageURL();
-
-    String getApp();
-
-    String getUri();
+    Intent.Message getMessage();
 }

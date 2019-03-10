@@ -1,5 +1,6 @@
 package dani.com.dialogflowassistance.logica.async;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import java.io.InputStream;
 
 public class AsyncImageLoad extends AsyncTask<String, Void, Bitmap> {
+    @SuppressLint("StaticFieldLeak")
     private ImageView bmImage;
 
     public AsyncImageLoad(ImageView bmImage) {

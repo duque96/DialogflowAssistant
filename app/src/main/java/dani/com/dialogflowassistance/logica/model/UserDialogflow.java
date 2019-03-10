@@ -5,7 +5,7 @@ public class UserDialogflow implements User {
     private String nickname;
 
     public UserDialogflow (){
-        this.userId = new Long(0);
+        this.userId = 0L;
         this.nickname = "Asistente";
     }
 

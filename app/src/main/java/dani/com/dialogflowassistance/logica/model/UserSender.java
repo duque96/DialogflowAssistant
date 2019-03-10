@@ -1,10 +1,10 @@
 package dani.com.dialogflowassistance.logica.model;
 
-public class UserSender implements User{
+public class UserSender implements User {
     private Long userId;
 
     public UserSender() {
-        this.userId = new Long(1);
+        this.userId = 1L;
     }
 
     public Long getUserId() {

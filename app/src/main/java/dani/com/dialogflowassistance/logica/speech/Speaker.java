@@ -5,12 +5,11 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 import java.util.Locale;
+import java.util.UUID;
 
 public class Speaker {
     private TextToSpeech tts;
-    private TextToSpeech.OnInitListener listener;
-
-    @Deprecated
+    
     public void speak(final String text, Context context) {
         tts = new TextToSpeech(context, createListener(text), "com.google.android.tts");
     }
@@ -25,7 +24,7 @@ public class Speaker {
                             result == TextToSpeech.LANG_NOT_SUPPORTED) {
                         Log.e("error", "This Language is not supported");
                     } else {
-                        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, UUID.randomUUID().toString());
                     }
                 } else
                     Log.e("error", "Initilization Failed!");

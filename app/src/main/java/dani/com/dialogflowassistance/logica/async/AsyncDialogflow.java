@@ -1,6 +1,7 @@
 package dani.com.dialogflowassistance.logica.async;
 
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
 import com.google.cloud.dialogflow.v2.DetectIntentRequest;
@@ -12,6 +13,7 @@ import com.google.cloud.dialogflow.v2.SessionsClient;
 import dani.com.dialogflowassistance.Vista.MainActivity;
 
 public class AsyncDialogflow extends AsyncTask<String, Void, DetectIntentResponse> {
+    @SuppressLint("StaticFieldLeak")
     private MainActivity activity;
     private SessionName session;
     private QueryInput queryInput;

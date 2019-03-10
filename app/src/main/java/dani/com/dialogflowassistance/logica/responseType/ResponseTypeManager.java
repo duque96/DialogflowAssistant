@@ -14,7 +14,6 @@ public class ResponseTypeManager {
 
     private ResponseType responseType;
     private QueryResult queryResult;
-    private Intent.Message.MessageCase messageCase;
     private Context context;
     private List<Message> messageList;
     private User user;
@@ -22,23 +21,27 @@ public class ResponseTypeManager {
     public ResponseTypeManager(QueryResult queryResult, Context context,
                                List<Message> messageList, User user) {
         this.queryResult = queryResult;
-        this.messageCase = queryResult.getFulfillmentMessages(0).getMessageCase();
         this.context = context;
         this.messageList = messageList;
         this.user = user;
     }
 
-    public void createResponse() {
-        switch (messageCase) {
-            case TEXT:
-                responseType = new TextResponse(context);
-                break;
-            case CARD:
-                responseType = new CardResponse();
-            default:
-                break;
-        }
+    public void createResponseMessage() {
+        for (int i = 0; i < queryResult.getFulfillmentMessagesCount(); i++) {
+            Intent.Message.MessageCase messageCase = queryResult.getFulfillmentMessages(i)
+                    .getMessageCase();
 
-        responseType.execute(queryResult, messageList, user);
+            switch (messageCase) {
+                case TEXT:
+                    responseType = new TextResponse(context);
+                    break;
+                case CARD:
+                    responseType = new CardResponse();
+                default:
+                    break;
+            }
+
+            responseType.execute(queryResult, messageList, user);
+        }
     }
 }

@@ -37,7 +37,7 @@ dependencies {
 
     implementation 'com.google.cloud:google-cloud-dialogflow:0.67.0-alpha'
     implementation 'io.grpc:grpc-okhttp:1.15.1'
-    //implementation 'com.google.android.material:material:1.0.0'
+    implementation name: 'pocketsphinx-android-5prealpha-release', ext: 'aar'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

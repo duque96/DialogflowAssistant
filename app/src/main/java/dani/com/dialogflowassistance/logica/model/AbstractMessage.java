@@ -1,10 +1,12 @@
 package dani.com.dialogflowassistance.logica.model;
 
+import com.google.cloud.dialogflow.v2.Intent;
+
 import java.util.Date;
 
 public abstract class AbstractMessage implements Message {
-    protected User sender;
-    protected Date createdAt;
+    User sender;
+    Date createdAt;
 
     @Override
     public User getSender() {
@@ -17,37 +19,7 @@ public abstract class AbstractMessage implements Message {
     }
 
     @Override
-    public String getMessage() {
-        return null;
-    }
-
-    @Override
-    public String getTitle() {
-        return null;
-    }
-
-    @Override
-    public String getSubtitle() {
-        return null;
-    }
-
-    @Override
-    public String getButton() {
-        return null;
-    }
-
-    @Override
-    public String getImageURL() {
-        return null;
-    }
-
-    @Override
-    public String getApp() {
-        return null;
-    }
-
-    @Override
-    public String getUri() {
+    public Intent.Message getMessage() {
         return null;
     }
 }

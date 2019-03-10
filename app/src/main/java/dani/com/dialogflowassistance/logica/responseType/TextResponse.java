@@ -16,7 +16,7 @@ public class TextResponse implements ResponseType {
     private Speaker textToSpeech;
     private Context context;
 
-    public TextResponse(Context context) {
+    TextResponse(Context context) {
         this.context = context;
         this.textToSpeech = new Speaker();
     }
@@ -24,7 +24,7 @@ public class TextResponse implements ResponseType {
     @Override
     public void execute(QueryResult queryResult, List<Message> messageList, User user) {
         Intent.Message message = queryResult.getFulfillmentMessages(0);
-        messageList.add(new TextMessage(user, message.getText().getText(0)));
+        messageList.add(new TextMessage(user, message));
         textToSpeech.speak(message.getText().getText(0), context);
     }
 }

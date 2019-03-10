@@ -44,7 +44,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             // If the current user is the sender of the message
             return VIEW_TYPE_MESSAGE_SENT;
         } else {
-            if (message.getType().equals(Intent.Message.MessageCase.CARD)){
+            if (message.getType().equals(Intent.Message.MessageCase.CARD)) {
                 return VIEW_TYPE_CARD_MESSAGE;
             } else {
                 return VIEW_TYPE_TEXT_MESSAGE;
@@ -105,7 +105,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         void bind(Message message) {
-            messageText.setText(message.getMessage());
+            messageText.setText(message.getMessage().getText().getText(0));
 
             // Format the stored timestamp into a readable String using method.
             timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
@@ -126,7 +126,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         void bind(Message message) {
-            messageText.setText(message.getMessage());
+            messageText.setText(message.getMessage().getText().getText(0));
 
             // Format the stored timestamp into a readable String using method.
             timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
@@ -155,14 +155,15 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         void bind(Message message) {
-            title.setText(message.getTitle());
-            subtitle.setText(message.getSubtitle());
-            button.setText(message.getButton());
+            title.setText(message.getMessage().getCard().getTitle());
+            subtitle.setText(message.getMessage().getCard().getTitle());
+            button.setText(message.getMessage().getCard().getButtons(0).getText());
 
-            String [] extras = {message.getApp(), message.getUri()};
+            String[] extras = {message.getMessage().getText().getText(0),
+                    message.getMessage().getCard().getImageUri()};
             button.setTag(extras);
 
-            new AsyncImageLoad(image).execute(message.getImageURL());
+            new AsyncImageLoad(image).execute(message.getMessage().getCard().getImageUri());
 
             // Format the stored timestamp into a readable String using method.
             timeText.setText(Utils.formatDateTime(message.getCreatedAt()));

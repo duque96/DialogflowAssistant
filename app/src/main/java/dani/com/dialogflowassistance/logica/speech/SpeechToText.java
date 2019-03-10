@@ -7,14 +7,18 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.widget.Toast;
 
+import com.google.cloud.dialogflow.v2.QueryInput;
+import com.google.cloud.dialogflow.v2.TextInput;
+
 import java.util.Locale;
 import java.util.Objects;
 
 import dani.com.dialogflowassistance.Vista.MainActivity;
+import dani.com.dialogflowassistance.logica.async.AsyncDialogflow;
+import dani.com.dialogflowassistance.logica.dialogflowCredentials.DialogflowCredentials;
 
 public class SpeechToText {
     private SpeechRecognizer recognizer;
-    private MainActivity activity;
 
     public SpeechToText(final MainActivity activity) {
         this.recognizer = SpeechRecognizer.createSpeechRecognizer(activity);
@@ -52,9 +56,19 @@ public class SpeechToText {
 
             @Override
             public void onResults(Bundle results) {
-                activity.reconigtionResults(Objects.requireNonNull(results.getStringArrayList
-                        (SpeechRecognizer
-                                .RESULTS_RECOGNITION)).get(0));
+                String recognitionText = Objects.requireNonNull(results
+                        .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)).get(0);
+
+                activity.createSendMessage(recognitionText);
+                if (recognitionText.trim().isEmpty()) {
+                    Toast.makeText(activity, "No se ha detectado audio", Toast.LENGTH_SHORT).show();
+                } else {
+                    QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder()
+                            .setText(recognitionText).setLanguageCode("es-ES")).build();
+                    new AsyncDialogflow(activity, DialogflowCredentials.getInstance().getSessionName(),
+                            queryInput, DialogflowCredentials.getInstance().getSessionsClient()).execute();
+                }
+
             }
 
             @Override

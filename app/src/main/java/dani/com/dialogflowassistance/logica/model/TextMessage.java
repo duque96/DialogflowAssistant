@@ -5,15 +5,15 @@ import com.google.cloud.dialogflow.v2.Intent;
 import java.util.Calendar;
 
 public class TextMessage extends AbstractMessage {
-    private String message;
+    private Intent.Message message;
 
-    public TextMessage(User sender, String message) {
+    public TextMessage(User sender, Intent.Message message) {
         this.createdAt = Calendar.getInstance().getTime();
         this.sender = sender;
         this.message = message;
     }
 
-    public String getMessage() {
+    public Intent.Message getMessage() {
         return message;
     }
 

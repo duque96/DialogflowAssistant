@@ -1,6 +1,5 @@
 package dani.com.dialogflowassistance.logica.responseType;
 
-import com.google.cloud.dialogflow.v2.Intent;
 import com.google.cloud.dialogflow.v2.QueryResult;
 
 import java.util.List;
