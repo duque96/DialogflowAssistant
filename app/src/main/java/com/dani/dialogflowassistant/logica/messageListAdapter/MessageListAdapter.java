@@ -1,4 +1,4 @@
-package com.dani.dialogflowassistant.logica.messageList;
+package com.dani.dialogflowassistant.logica.messageListAdapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -160,9 +160,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             button.setText(message.getMessage().getCard().getButtons(0).getText());
 
 
-//            String[] extras = {message.getMessage().getText().getText(0),
-//                    message.getMessage().getCard().getImageUri()};
-//            button.setTag(extras);
+            String[] extras = {message.getMessage().getCard().getButtons(0).getPostback()};
+            button.setTag(extras);
 
             new AsyncImageLoad(image).execute(message.getMessage().getCard().getImageUri());
 
