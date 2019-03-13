@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="8dp"
@@ -13,8 +11,9 @@
         android:id="@+id/image_message_profile"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:background="@mipmap/image_received"
+        android:contentDescription="@string/image_message_profile"
         android:scaleType="centerCrop"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,9 +22,8 @@
         android:id="@+id/card_message_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
-        android:text="John Doe"
+        android:text="@string/message_name"
         android:textColor="@android:color/white"
         app:layout_constraintLeft_toRightOf="@+id/image_message_profile"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,26 +33,28 @@
         style="@style/Widget.MaterialComponents.CardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
 
         app:layout_constraintLeft_toRightOf="@+id/image_message_profile"
-        app:layout_constraintTop_toBottomOf="@+id/card_message_name" >
+        app:layout_constraintTop_toBottomOf="@+id/card_message_name">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/colorMessageRecieved">
+            android:background="@color/colorMessageRecieved"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/card_image"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
+                android:contentDescription="@string/card_image"
                 android:maxWidth="230dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/rounded_rectangle_message_recieved" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:maxWidth="230dp"
-                    android:text="Título"
+                    android:text="@string/card_title"
                     android:textColor="@color/colorPrimary"
                     android:textSize="18sp" />
 
@@ -76,9 +76,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxWidth="230dp"
-                    android:text="Subtitulo"
+                    android:text="@string/card_subtitle"
                     android:textColor="@color/colorPrimary" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -88,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="displayApp"
-                    android:text="hola"
+                    android:text="@string/card_button"
                     android:textColor="@color/colorPrimary"
                     android:theme="@style/PrimaryFlatButton" />
             </LinearLayout>
@@ -100,10 +101,9 @@
         android:id="@+id/card_message_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:text="11:40"
+        android:text="@string/card_message_time"
         android:textColor="@android:color/white"
-        android:textSize="10sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/card_message"
         app:layout_constraintLeft_toRightOf="@+id/card_message" />
 

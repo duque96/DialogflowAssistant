@@ -9,9 +9,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.dani.dialogflowassistant.vista.MainActivity;
-import com.dani.dialogflowassistant.vista.speechRecognitionView.SpeechRecognitionView;
+import com.dani.dialogflowassistant.vista.speechview.SpeechRecognitionView;
 import com.dani.dialogflowassistant.logica.async.AsyncDialogflow;
-import com.dani.dialogflowassistant.logica.dialogflowCredentials.DialogflowCredentials;
+import com.dani.dialogflowassistant.logica.credentials.DialogflowCredentials;
 import com.dani.dialogflowassistant.logica.model.TextMessage;
 import com.dani.dialogflowassistant.logica.util.ViewGroupUtils;
 import com.google.cloud.dialogflow.v2.QueryInput;
@@ -36,21 +36,22 @@ public class SpeechToText {
 
             @Override
             public void onBeginningOfSpeech() {
-
+                Log.i("SpeechBeginning", "User started to speak");
             }
 
             @Override
             public void onRmsChanged(float rmsdB) {
-
+                // Without use
             }
 
             @Override
             public void onBufferReceived(byte[] buffer) {
+                // Without use
             }
 
             @Override
             public void onEndOfSpeech() {
-
+                Log.i("SpeechEnd", "User stops speaking");
             }
 
             @Override
@@ -72,12 +73,12 @@ public class SpeechToText {
 
             @Override
             public void onPartialResults(Bundle partialResults) {
-
+                // Without use
             }
 
             @Override
             public void onEvent(int eventType, Bundle params) {
-
+                // Without use
             }
 
             private void checkIfEmpty(String recognitionText) {

@@ -1,4 +1,4 @@
-package com.dani.dialogflowassistant.logica.dialogflowCredentials;
+package com.dani.dialogflowassistant.logica.credentials;
 
 import android.app.Activity;
 

@@ -33,6 +33,7 @@ public class Speaker {
                         tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                             @Override
                             public void onStart(String utteranceId) {
+                                Log.i("StartSpeaker", "The speaker starts to play");
                             }
 
                             @Override
@@ -51,7 +52,7 @@ public class Speaker {
 
                             @Override
                             public void onError(String utteranceId) {
-
+                                Log.e("SpeakerError", "An error has occured while the speaker was playing");
                             }
                         });
 
@@ -59,12 +60,8 @@ public class Speaker {
                                 TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
                     }
                 } else
-                    Log.e("error", "Initilization Failed!");
+                    Log.e("SpeakerError", "Initilization Failed!");
             }
         };
-    }
-
-    private void changeViews() {
-
     }
 }

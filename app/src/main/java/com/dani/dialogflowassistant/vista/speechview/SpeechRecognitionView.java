@@ -1,4 +1,4 @@
-package com.dani.dialogflowassistant.vista.speechRecognitionView;
+package com.dani.dialogflowassistant.vista.speechview;
 
 import android.app.Activity;
 import android.speech.SpeechRecognizer;

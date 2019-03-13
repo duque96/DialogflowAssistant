@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.dani.dialogflowassistant.vista.MainActivity;
-import com.dani.dialogflowassistant.logica.responseType.ResponseTypeManager;
+import com.dani.dialogflowassistant.logica.response.ResponseTypeManager;
 import com.google.cloud.dialogflow.v2.DetectIntentRequest;
 import com.google.cloud.dialogflow.v2.DetectIntentResponse;
 import com.google.cloud.dialogflow.v2.QueryInput;

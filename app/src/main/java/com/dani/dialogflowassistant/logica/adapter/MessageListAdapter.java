@@ -1,4 +1,4 @@
-package com.dani.dialogflowassistant.logica.messageListAdapter;
+package com.dani.dialogflowassistant.logica.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +17,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.dani.dialogflowassistant.R;
 
 public class MessageListAdapter extends RecyclerView.Adapter {
@@ -91,20 +92,22 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             case VIEW_TYPE_TEXT_MESSAGE:
                 ((ReceivedTextMessageHolder) holder).bind(message);
                 break;
+            default:
+                break;
         }
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
+        private TextView messageText, timeText;
 
-        SentMessageHolder(View itemView) {
+        private SentMessageHolder(View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.text_message_body);
             timeText = itemView.findViewById(R.id.text_message_time);
         }
 
-        void bind(Message message) {
+        private void bind(Message message) {
             messageText.setText(message.getMessage().getText().getText(0));
 
             // Format the stored timestamp into a readable String using method.
@@ -113,37 +116,32 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     private class ReceivedTextMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText, nameText;
-        ImageView profileImage;
+        private TextView messageText, timeText, nameText;
 
-        ReceivedTextMessageHolder(View itemView) {
+        private ReceivedTextMessageHolder(View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.text_message_body);
             timeText = itemView.findViewById(R.id.text_message_time);
             nameText = itemView.findViewById(R.id.text_message_name);
-            profileImage = itemView.findViewById(R.id.image_message_profile);
         }
 
-        void bind(Message message) {
+        private void bind(Message message) {
             messageText.setText(message.getMessage().getText().getText(0));
 
             // Format the stored timestamp into a readable String using method.
             timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
 
             nameText.setText(message.getSender().getNickname());
-
-            // Insert the profile image from the URL into the ImageView.
-//            Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
         }
     }
 
     private class ReceivedCardMessageHolder extends RecyclerView.ViewHolder {
-        TextView title, subtitle, timeText, nameText;
-        Button button;
-        ImageView image;
+        private TextView title, subtitle, timeText, nameText;
+        private Button button;
+        private ImageView image;
 
-        ReceivedCardMessageHolder(View itemView) {
+        private ReceivedCardMessageHolder(View itemView) {
             super(itemView);
 
             title = itemView.findViewById(R.id.card_title);
@@ -154,11 +152,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             image = itemView.findViewById(R.id.card_image);
         }
 
-        void bind(Message message) {
+        private void bind(Message message) {
             title.setText(message.getMessage().getCard().getTitle());
             subtitle.setText(message.getMessage().getCard().getTitle());
             button.setText(message.getMessage().getCard().getButtons(0).getText());
-
 
             String[] extras = {message.getMessage().getCard().getButtons(0).getPostback()};
             button.setTag(extras);
@@ -169,9 +166,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
 
             nameText.setText(message.getSender().getNickname());
-
-            // Insert the profile image from the URL into the ImageView.
-//            Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
         }
     }
 }

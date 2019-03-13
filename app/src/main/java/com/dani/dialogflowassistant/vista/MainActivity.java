@@ -3,11 +3,11 @@ package com.dani.dialogflowassistant.vista;
 import android.os.Bundle;
 import android.view.View;
 
-import com.dani.dialogflowassistant.logica.externalApps.ExternalAppManager;
+import com.dani.dialogflowassistant.logica.actions.ButtonAction;
 import com.dani.dialogflowassistant.logica.util.ViewGroupUtils;
-import com.dani.dialogflowassistant.vista.speechRecognitionView.SpeechRecognitionView;
-import com.dani.dialogflowassistant.logica.dialogflowCredentials.DialogflowCredentials;
-import com.dani.dialogflowassistant.logica.messageListAdapter.MessageListAdapter;
+import com.dani.dialogflowassistant.vista.speechview.SpeechRecognitionView;
+import com.dani.dialogflowassistant.logica.credentials.DialogflowCredentials;
+import com.dani.dialogflowassistant.logica.adapter.MessageListAdapter;
 import com.dani.dialogflowassistant.logica.model.Message;
 import com.dani.dialogflowassistant.logica.model.SendBird;
 import com.dani.dialogflowassistant.logica.model.User;
@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
      * @param view view
      */
     public void displayApp(View view) {
-        ExternalAppManager externalAppManager = new ExternalAppManager();
-        externalAppManager.display((String[]) view.getTag(), this);
+        ButtonAction externalAppManager = new ButtonAction();
+        externalAppManager.action((String[]) view.getTag(), this);
     }
 
     public void addMessages(Message message) {

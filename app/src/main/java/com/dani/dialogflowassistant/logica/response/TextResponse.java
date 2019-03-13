@@ -1,4 +1,4 @@
-package com.dani.dialogflowassistant.logica.responseType;
+package com.dani.dialogflowassistant.logica.response;
 
 import com.dani.dialogflowassistant.vista.MainActivity;
 import com.dani.dialogflowassistant.logica.model.Message;

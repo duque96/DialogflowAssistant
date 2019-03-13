@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">DialogflowAssistant</string>
+    <string name="image_message_profile">Dialogflow image profile</string>
+    <string name="message_name">Dani</string>
+    <string name="message_body">Mensaje de texto</string>
+    <string name="card_image">Card image response</string>
+    <string name="card_title">Título</string>
+    <string name="card_subtitle">Subtítulo</string>
+    <string name="card_button">Button</string>
+    <string name="message_time">00:00</string>
 </resources>
