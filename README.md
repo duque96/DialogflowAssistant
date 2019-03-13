@@ -1,2 +1,2 @@
 # DialogflowAssistant
-[![Build Status](https://travis-ci.com/duque96/DialogflowAssistant.svg?branch=master)](https://travis-ci.com/duque96/DialogflowAssistant)
+[![Build Status](https://travis-ci.com/duque96/DialogflowAssistant.svg?branch=master)](https://travis-ci.com/duque96/DialogflowAssistant) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/01794910f12142f69420c682206e5ae3)](https://www.codacy.com/app/danyduque9/DialogflowAssistant?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=duque96/DialogflowAssistant&amp;utm_campaign=Badge_Grade)
