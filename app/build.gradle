@@ -4,10 +4,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.dani.dialogflowassistant"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 28
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -54,4 +54,5 @@ dependencies {
     implementation 'com.github.zagum:SpeechRecognitionView:1.2.2'
     implementation 'com.dani.appupdateinstaller:appupdateinstaller@aar'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
+    implementation 'com.android.support:support-v4:28.0.0'
 }

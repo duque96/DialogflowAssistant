@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dani.appupdateinstaller.AppUpdateInstaller;
+import com.dani.dialogflowassistant.BuildConfig;
 import com.dani.dialogflowassistant.R;
 import com.dani.dialogflowassistant.logica.actions.ButtonAction;
 import com.dani.dialogflowassistant.logica.adapter.MessageListAdapter;
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         } else {
             String json = "https://raw.githubusercontent.com/duque96/DialogflowAssistant/master/app/update-changelog.json";
             AppUpdateInstaller installer = new AppUpdateInstaller(this, "DialogflowAssistant",
-                    R.layout.activity_main, this, json);
+                    R.layout.activity_main, this, json, BuildConfig.APPLICATION_ID);
             installer.execute();
         }
     }
