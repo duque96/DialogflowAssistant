@@ -1,13 +1,21 @@
 package com.dani.dialogflowassistant.vista;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.dani.appupdateinstaller.AppUpdateInstaller;
+import com.dani.dialogflowassistant.R;
 import com.dani.dialogflowassistant.logica.actions.ButtonAction;
-import com.dani.dialogflowassistant.logica.util.ViewGroupUtils;
-import com.dani.dialogflowassistant.vista.speechview.SpeechRecognitionView;
-import com.dani.dialogflowassistant.logica.credentials.DialogflowCredentials;
 import com.dani.dialogflowassistant.logica.adapter.MessageListAdapter;
+import com.dani.dialogflowassistant.logica.credentials.DialogflowCredentials;
 import com.dani.dialogflowassistant.logica.model.Message;
 import com.dani.dialogflowassistant.logica.model.SendBird;
 import com.dani.dialogflowassistant.logica.model.User;
@@ -15,6 +23,9 @@ import com.dani.dialogflowassistant.logica.model.UserDialogflow;
 import com.dani.dialogflowassistant.logica.model.UserSender;
 import com.dani.dialogflowassistant.logica.speech.SpeechToText;
 import com.dani.dialogflowassistant.logica.util.Permiso;
+import com.dani.dialogflowassistant.logica.util.Utils;
+import com.dani.dialogflowassistant.logica.util.ViewGroupUtils;
+import com.dani.dialogflowassistant.vista.speechview.SpeechRecognitionView;
 import com.github.zagum.speechrecognitionview.RecognitionProgressView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -22,12 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.dani.dialogflowassistant.R;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Handler.Callback {
     // View
     private RecyclerView mMessageRecycler;
     private MessageListAdapter mMessageAdapter;
@@ -70,6 +76,39 @@ public class MainActivity extends AppCompatActivity {
         messageList = new ArrayList<>();
         mMessageAdapter = new MessageListAdapter(messageList);
         mMessageRecycler.setAdapter(mMessageAdapter);
+
+        // Comprobaciones
+        checkInternetConnection(this);
+    }
+
+    private void checkInternetConnection(final Activity activity) {
+        if (!Utils.isNetworkAvailable(activity)) {
+            final AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setCancelable(false)
+                    .setTitle("No hay conexión de red")
+                    .setMessage("Comprueba tus ajustes de red e inténtalo de nuevo")
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                        }
+                    }).create();
+
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+                    dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.dialog_round));
+                }
+            });
+
+            dialog.show();
+        } else {
+            String json = "https://raw.githubusercontent.com/duque96/DialogflowAssistant/master/app/update-changelog.json";
+            AppUpdateInstaller installer = new AppUpdateInstaller(this, "DialogflowAssistant",
+                    R.layout.activity_main, this, json);
+            installer.execute();
+        }
     }
 
     /**
@@ -115,8 +154,13 @@ public class MainActivity extends AppCompatActivity {
         return recordingButton;
     }
 
-    public RecognitionProgressView getSpeechRecognitionView(){
+    public RecognitionProgressView getSpeechRecognitionView() {
         return speechRecognitionView.getView();
+    }
+
+    @Override
+    public boolean handleMessage(android.os.Message msg) {
+        return true;
     }
 }
 
