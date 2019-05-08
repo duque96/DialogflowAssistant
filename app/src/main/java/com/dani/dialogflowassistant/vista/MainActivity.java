@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     private User currentUser;
     private User assistant;
 
+    private Activity thisActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

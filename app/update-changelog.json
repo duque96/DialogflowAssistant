@@ -1,8 +1,8 @@
 {
-  "latestVersion": "1.0",
-  "latestVersionCode": "1",
-  "url": "https://github.com/duque96/DialogflowAssistant/releases/download/v1.0/DialogflowAssitant_v1.0.apk",
+  "latestVersion": "1.1",
+  "latestVersionCode": "2",
+  "url": "https://github.com/duque96/DialogflowAssistant/releases/download/v1.1/DialogflowAssitant_v1.1.apk",
   "releaseNotes": [
-    "- Dialogflow assistant"
+    "- App updater fixed"
   ]
 }
