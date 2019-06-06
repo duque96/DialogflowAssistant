@@ -23,6 +23,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_CARD_MESSAGE = 2;
     private static final int VIEW_TYPE_TEXT_MESSAGE = 3;
+    private static final int VIEW_TYPE_TEXT_MESSAGE_WITHOUT_USER = 4;
 
     private List<Message> mMessageList;
 
@@ -47,7 +48,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             if (message.getType().equals(Intent.Message.MessageCase.CARD)) {
                 return VIEW_TYPE_CARD_MESSAGE;
             } else {
-                return VIEW_TYPE_TEXT_MESSAGE;
+                if (position > 0 && mMessageList.get(position-1).getSender().getNickname().equals(
+                        "Asistente")) {
+                    return VIEW_TYPE_TEXT_MESSAGE_WITHOUT_USER;
+                } else {
+                    return VIEW_TYPE_TEXT_MESSAGE;
+                }
             }
         }
     }
@@ -67,23 +73,15 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_message_received_card, parent, false);
                 return new ReceivedCardMessageHolder(view);
-            } else {
-                if (mMessageList.size() == 0) {
-                    view = LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.item_message_received_text, parent, false);
-                } else {
-                    if (mMessageList.get(mMessageList.size() - 1).getSender().getNickname().equals(
-                            "Asistente")) {
-                        view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_message_received_text_without_user, parent, false);
-                    } else {
-                        view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_message_received_text, parent, false);
-                    }
-                }
+            } else if (viewType == VIEW_TYPE_TEXT_MESSAGE) {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_message_received_text, parent, false);
                 return new ReceivedTextMessageHolder(view);
+            } else {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_message_received_text_without_user, parent, false);
+                return new ReceivedTextMessageWithoutUserHolder(view);
             }
-
         }
     }
 
@@ -101,6 +99,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 break;
             case VIEW_TYPE_TEXT_MESSAGE:
                 ((ReceivedTextMessageHolder) holder).bind(message);
+                break;
+            case VIEW_TYPE_TEXT_MESSAGE_WITHOUT_USER:
+                ((ReceivedTextMessageWithoutUserHolder) holder).bind(message);
                 break;
             default:
                 break;
@@ -143,6 +144,24 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
 
             nameText.setText(message.getSender().getNickname());
+        }
+    }
+
+    private class ReceivedTextMessageWithoutUserHolder extends RecyclerView.ViewHolder {
+        private TextView messageText, timeText;
+
+        private ReceivedTextMessageWithoutUserHolder(View itemView) {
+            super(itemView);
+
+            messageText = itemView.findViewById(R.id.text_message_body_without_user);
+            timeText = itemView.findViewById(R.id.text_message_time_without_user);
+        }
+
+        private void bind(Message message) {
+            messageText.setText(message.getMessage().getText().getText(0));
+
+            // Format the stored timestamp into a readable String using method.
+            timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
         }
     }
 

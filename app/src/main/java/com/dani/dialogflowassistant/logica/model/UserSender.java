@@ -13,6 +13,6 @@ public class UserSender implements User {
 
     @Override
     public String getNickname() {
-        return null;
+        return "userSender";
     }
 }
