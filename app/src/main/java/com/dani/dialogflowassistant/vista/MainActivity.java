@@ -1,13 +1,17 @@
 package com.dani.dialogflowassistant.vista;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,8 +30,10 @@ import com.dani.dialogflowassistant.logica.speech.SpeechToText;
 import com.dani.dialogflowassistant.logica.util.Permiso;
 import com.dani.dialogflowassistant.logica.util.Utils;
 import com.dani.dialogflowassistant.logica.util.ViewGroupUtils;
+import com.dani.dialogflowassistant.vista.bottomsheet.DisableBottomSheet;
 import com.dani.dialogflowassistant.vista.speechview.SpeechRecognitionView;
 import com.github.zagum.speechrecognitionview.RecognitionProgressView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -40,14 +46,13 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     private MessageListAdapter mMessageAdapter;
     private FloatingActionButton recordingButton;
     private SpeechRecognitionView speechRecognitionView;
+    private DisableBottomSheet disableBottomSheet;
 
     // Logica
     private SpeechToText reconigzer;
     private List<Message> messageList;
     private User currentUser;
     private User assistant;
-
-    private Activity thisActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +87,27 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
         // Comprobaciones
         checkInternetConnection(this);
+
+        //BottomSheetBehaviour
+        disableBottomSheet = (DisableBottomSheet) DisableBottomSheet.from(findViewById(R.id.bottom_sheet));
+        disableBottomSheet.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                if (i == BottomSheetBehavior.STATE_EXPANDED && !disableBottomSheet.isDisabled()) {
+                    disableBottomSheet.setDisabled();
+                    changeBottomSheetBackground();
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+
+        createWelcomeMessage();
+
+        slideToTop(findViewById(R.id.coordinatorLayout));
     }
 
     private void checkInternetConnection(final Activity activity) {
@@ -100,8 +126,9 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface arg0) {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
-                    dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.dialog_round));
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
+                    Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(ContextCompat.getDrawable(activity,
+                            R.drawable.dialog_round));
                 }
             });
 
@@ -137,7 +164,16 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         externalAppManager.action((String[]) view.getTag(), this);
     }
 
-    public void addMessages(Message message) {
+    public void addMessages(final Message message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (disableBottomSheet.getState() == BottomSheetBehavior.STATE_COLLAPSED && messageList.size() == 2 && message.getSender().equals(assistant)) {
+                    disableBottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    changeBottomSheetBackground();
+                }
+            }
+        });
         messageList.add(message);
 
         int newMsgPosition = messageList.size() - 1;
@@ -164,6 +200,28 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     @Override
     public boolean handleMessage(android.os.Message msg) {
         return true;
+    }
+
+    public void slideToTop(View view) {
+
+        ObjectAnimator animation = ObjectAnimator.ofFloat(view, "translationY",
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0,
+                        getResources().getDisplayMetrics()));
+        animation.setDuration(500);
+        animation.start();
+    }
+
+    private void createWelcomeMessage() {
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.lightTransparent));
+        reconigzer.handleRecognizedText("Bienvenida", true);
+        ViewGroupUtils.micToSpeechView();
+    }
+
+    private void changeBottomSheetBackground() {
+        View v = findViewById(R.id.bottom_sheet);
+        v.setBackground(null);
+        v.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
     }
 }
 

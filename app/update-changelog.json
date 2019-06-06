@@ -1,8 +1,9 @@
 {
-  "latestVersion": "1.2",
-  "latestVersionCode": "3",
+  "latestVersion": "2",
+  "latestVersionCode": "4",
   "url": "https://github.com/duque96/DialogflowAssistant/releases/download/v1.2/DialogflowAssistant_v1.2.apk",
   "releaseNotes": [
-    "- App updater fixed"
+    "- Design modified",
+	"- Expandable layout"
   ]
 }

@@ -8,12 +8,12 @@ import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.dani.dialogflowassistant.vista.MainActivity;
-import com.dani.dialogflowassistant.vista.speechview.SpeechRecognitionView;
 import com.dani.dialogflowassistant.logica.async.AsyncDialogflow;
 import com.dani.dialogflowassistant.logica.credentials.DialogflowCredentials;
 import com.dani.dialogflowassistant.logica.model.TextMessage;
 import com.dani.dialogflowassistant.logica.util.ViewGroupUtils;
+import com.dani.dialogflowassistant.vista.MainActivity;
+import com.dani.dialogflowassistant.vista.speechview.SpeechRecognitionView;
 import com.google.cloud.dialogflow.v2.QueryInput;
 import com.google.cloud.dialogflow.v2.TextInput;
 
@@ -22,9 +22,11 @@ import java.util.Objects;
 
 public class SpeechToText {
     private SpeechRecognizer recognizer;
+    private MainActivity activity;
 
 
-    public SpeechToText(final MainActivity activity, final SpeechRecognitionView speechRecognitionView) {
+    public SpeechToText(MainActivity activity, final SpeechRecognitionView speechRecognitionView) {
+        this.activity = activity;
         this.recognizer = SpeechRecognizer.createSpeechRecognizer(activity);
         speechRecognitionView.setSpeechReconigzer(recognizer);
 
@@ -67,7 +69,7 @@ public class SpeechToText {
                 String recognitionText = Objects.requireNonNull(results
                         .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)).get(0);
 
-                checkIfEmpty(recognitionText);
+                handleRecognizedText(recognitionText, false);
             }
 
 
@@ -80,30 +82,6 @@ public class SpeechToText {
             public void onEvent(int eventType, Bundle params) {
                 // Without use
             }
-
-            private void checkIfEmpty(String recognitionText) {
-                if (recognitionText.trim().isEmpty()) {
-                    Toast.makeText(activity, "No se ha detectado audio", Toast.LENGTH_SHORT).show();
-                } else {
-
-                    String formatedText =
-                            recognitionText.substring(0, 1).toUpperCase() + recognitionText.substring(1);
-
-                    com.google.cloud.dialogflow.v2.Intent.Message.Text text =
-                            com.google.cloud.dialogflow.v2.Intent.Message.Text.newBuilder().addText(formatedText).build();
-
-                    com.google.cloud.dialogflow.v2.Intent.Message message =
-                            com.google.cloud.dialogflow.v2.Intent.Message.getDefaultInstance().newBuilderForType().setText(text).build();
-
-                    activity.addMessages(new TextMessage(activity.getCurrentUser(), message));
-
-                    QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder()
-                            .setText(recognitionText).setLanguageCode("es-ES")).build();
-
-                    new AsyncDialogflow(activity, DialogflowCredentials.getInstance().getSessionName(),
-                            queryInput, DialogflowCredentials.getInstance().getSessionsClient()).execute();
-                }
-            }
         });
     }
 
@@ -113,5 +91,29 @@ public class SpeechToText {
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
         recognizer.startListening(intent);
+    }
+
+    public void handleRecognizedText(String recognitionText, boolean welcome) {
+        if (recognitionText.trim().isEmpty()) {
+            Toast.makeText(activity, "No se ha detectado audio", Toast.LENGTH_SHORT).show();
+        } else {
+
+            String formatedText =
+                    recognitionText.substring(0, 1).toUpperCase() + recognitionText.substring(1);
+
+            com.google.cloud.dialogflow.v2.Intent.Message.Text text =
+                    com.google.cloud.dialogflow.v2.Intent.Message.Text.newBuilder().addText(formatedText).build();
+
+            com.google.cloud.dialogflow.v2.Intent.Message message =
+                    com.google.cloud.dialogflow.v2.Intent.Message.getDefaultInstance().newBuilderForType().setText(text).build();
+            if (!welcome)
+                activity.addMessages(new TextMessage(activity.getCurrentUser(), message));
+
+            QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder()
+                    .setText(recognitionText).setLanguageCode("es-ES")).build();
+
+            new AsyncDialogflow(activity, DialogflowCredentials.getInstance().getSessionName(),
+                    queryInput, DialogflowCredentials.getInstance().getSessionsClient()).execute();
+        }
     }
 }

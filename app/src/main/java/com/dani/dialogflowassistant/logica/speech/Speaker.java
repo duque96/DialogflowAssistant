@@ -42,9 +42,7 @@ public class Speaker {
                                 Runnable runnable = new Runnable() {
                                     @Override
                                     public void run() {
-                                        activity.getSpeechRecognitionView().stop();
-                                        ViewGroupUtils.replaceView(activity.getSpeechRecognitionView(),
-                                                activity.getRecordingButton());
+                                        ViewGroupUtils.speechToMicView();
                                     }
                                 };
                                 handler.post(runnable);

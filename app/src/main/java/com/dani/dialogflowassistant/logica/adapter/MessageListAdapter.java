@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.dani.dialogflowassistant.R;
 import com.dani.dialogflowassistant.logica.async.AsyncImageLoad;
 import com.dani.dialogflowassistant.logica.model.Message;
 import com.dani.dialogflowassistant.logica.model.SendBird;
@@ -14,11 +18,6 @@ import com.dani.dialogflowassistant.logica.util.Utils;
 import com.google.cloud.dialogflow.v2.Intent;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.dani.dialogflowassistant.R;
 
 public class MessageListAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
@@ -69,8 +68,14 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                         .inflate(R.layout.item_message_received_card, parent, false);
                 return new ReceivedCardMessageHolder(view);
             } else {
-                view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_message_received_text, parent, false);
+                if (mMessageList.get(mMessageList.size() - 1).getSender().getNickname().equals(
+                        "Asistente")) {
+                    view = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.item_message_received_text_without_user, parent, false);
+                } else {
+                    view = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.item_message_received_text, parent, false);
+                }
                 return new ReceivedTextMessageHolder(view);
             }
 
