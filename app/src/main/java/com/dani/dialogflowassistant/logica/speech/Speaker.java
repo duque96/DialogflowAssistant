@@ -5,8 +5,9 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
-import com.dani.dialogflowassistant.vista.MainActivity;
+import com.dani.dialogflowassistant.logica.context.MessageContext;
 import com.dani.dialogflowassistant.logica.util.ViewGroupUtils;
+import com.dani.dialogflowassistant.vista.MainActivity;
 
 import java.util.Locale;
 
@@ -42,7 +43,19 @@ public class Speaker {
                                 Runnable runnable = new Runnable() {
                                     @Override
                                     public void run() {
-                                        ViewGroupUtils.speechToMicView();
+                                        if (activity.getMessageList().get(activity.getMessageList().size() - 1).getContext() != null) {
+                                            String[] parts =
+                                                    activity.getMessageList().get(activity.getMessageList().size() - 1).getContext().getName().split("/");
+                                            String context = parts[6];
+                                            if (MessageContext.isQuestion(context) && !tts.isSpeaking()) {
+                                                activity.getSpeechRecognitionView().stop();
+                                                activity.getSpeechRecognitionView().play();
+                                                activity.activarMicrofono(null);
+                                            } else if (MessageContext.isAnswer(context) && !tts.isSpeaking())
+                                                ViewGroupUtils.speechToMicView();
+                                        } else {
+                                            ViewGroupUtils.speechToMicView();
+                                        }
                                     }
                                 };
                                 handler.post(runnable);
@@ -61,5 +74,11 @@ public class Speaker {
                     Log.e("SpeakerError", "Initilization Failed!");
             }
         };
+    }
+
+    public void stopSpeaking() {
+        if (tts.isSpeaking()){
+            tts.stop();
+        }
     }
 }

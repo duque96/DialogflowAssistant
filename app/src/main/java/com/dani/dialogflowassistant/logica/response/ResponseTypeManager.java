@@ -1,8 +1,8 @@
 package com.dani.dialogflowassistant.logica.response;
 
-import com.dani.dialogflowassistant.logica.util.ViewGroupUtils;
-import com.dani.dialogflowassistant.vista.MainActivity;
 import com.dani.dialogflowassistant.logica.model.User;
+import com.dani.dialogflowassistant.vista.MainActivity;
+import com.google.cloud.dialogflow.v2.Context;
 import com.google.cloud.dialogflow.v2.Intent;
 import com.google.cloud.dialogflow.v2.QueryResult;
 
@@ -22,6 +22,9 @@ public class ResponseTypeManager {
     public void createResponseMessage() {
         for (int i = 0; i < queryResult.getFulfillmentMessagesCount(); i++) {
             Intent.Message message = queryResult.getFulfillmentMessages(i);
+            Context context = null;
+            if (queryResult.getOutputContextsCount() > 0)
+                context = queryResult.getOutputContexts(0);
 
             switch (message.getMessageCase()) {
                 case TEXT:
@@ -29,13 +32,16 @@ public class ResponseTypeManager {
                     break;
                 case CARD:
                     responseType = new CardResponse();
-                    ViewGroupUtils.speechToMicView();
+                    break;
+                case SUGGESTIONS:
+                    responseType = new SuggestionResponse();
                     break;
                 default:
                     break;
             }
 
-            activity.addMessages(responseType.execute(queryResult, user, message));
+            activity.addMessages(responseType.execute(queryResult, user, message,
+                    context));
         }
     }
 }

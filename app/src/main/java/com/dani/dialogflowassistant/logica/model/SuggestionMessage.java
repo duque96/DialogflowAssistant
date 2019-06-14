@@ -5,25 +5,27 @@ import com.google.cloud.dialogflow.v2.Intent;
 
 import java.util.Calendar;
 
-public class CardMessage extends AbstractMessage {
+public class SuggestionMessage extends AbstractMessage {
     private Intent.Message message;
     private Context context;
 
-    public CardMessage(User sender, Intent.Message message, Context context) {
+    public SuggestionMessage(User sender, Intent.Message message, Context context) {
         this.createdAt = Calendar.getInstance().getTime();
         this.sender = sender;
         this.message = message;
         this.context = context;
     }
 
-    public Intent.Message.MessageCase getType() {
-        return Intent.Message.MessageCase.CARD;
-    }
-
     public Intent.Message getMessage() {
         return message;
     }
 
+    @Override
+    public Intent.Message.MessageCase getType() {
+        return Intent.Message.MessageCase.SUGGESTIONS;
+    }
+
+    @Override
     public Context getContext() {
         return context;
     }

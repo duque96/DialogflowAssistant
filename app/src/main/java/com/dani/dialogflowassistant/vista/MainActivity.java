@@ -1,10 +1,13 @@
 package com.dani.dialogflowassistant.vista;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -26,6 +29,7 @@ import com.dani.dialogflowassistant.logica.model.SendBird;
 import com.dani.dialogflowassistant.logica.model.User;
 import com.dani.dialogflowassistant.logica.model.UserDialogflow;
 import com.dani.dialogflowassistant.logica.model.UserSender;
+import com.dani.dialogflowassistant.logica.speech.Speaker;
 import com.dani.dialogflowassistant.logica.speech.SpeechToText;
 import com.dani.dialogflowassistant.logica.util.Permiso;
 import com.dani.dialogflowassistant.logica.util.Utils;
@@ -34,6 +38,7 @@ import com.dani.dialogflowassistant.vista.bottomsheet.DisableBottomSheet;
 import com.dani.dialogflowassistant.vista.speechview.SpeechRecognitionView;
 import com.github.zagum.speechrecognitionview.RecognitionProgressView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -50,15 +55,25 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
     // Logica
     private SpeechToText reconigzer;
+    private Speaker textToSpeech;
     private List<Message> messageList;
     private User currentUser;
     private User assistant;
 
+    //Mantener la pantalla encendida
+    private PowerManager.WakeLock wakelock;
+
+    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Objects.requireNonNull(getSupportActionBar()).hide();
+
+        //Evitar que la pantalla se apague
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        this.wakelock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
+        wakelock.acquire();
 
         //Views
         speechRecognitionView = new SpeechRecognitionView(this);
@@ -82,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         mMessageRecycler = findViewById(R.id.reyclerview_message_list);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
         messageList = new ArrayList<>();
-        mMessageAdapter = new MessageListAdapter(messageList);
+        mMessageAdapter = new MessageListAdapter(messageList, this);
         mMessageRecycler.setAdapter(mMessageAdapter);
 
         // Comprobaciones
@@ -223,5 +238,52 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         v.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
     }
-}
 
+    public List<Message> getMessageList() {
+        return new ArrayList<>(messageList);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.wakelock.release();
+        if (textToSpeech != null)
+            textToSpeech.stopSpeaking();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (textToSpeech != null)
+            textToSpeech.stopSpeaking();
+    }
+
+    public Speaker getSpeaker() {
+        textToSpeech = new Speaker();
+        return textToSpeech;
+    }
+
+    public void categorySelect(View v) {
+        reconigzer.stopListening();
+        ViewGroupUtils.speechToMicView();
+
+        String text = ((Chip) v).getText().toString();
+
+        int position = messageList.size() - 1;
+        messageList.remove(position);
+        mMessageAdapter.notifyItemRemoved(position);
+        mMessageAdapter.notifyItemRangeChanged(position, messageList.size());
+
+        reconigzer.handleRecognizedText(text, false);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        wakelock.acquire();
+    }
+
+    public void onSaveInstanceState(Bundle icicle) {
+        super.onSaveInstanceState(icicle);
+        this.wakelock.release();
+    }
+}

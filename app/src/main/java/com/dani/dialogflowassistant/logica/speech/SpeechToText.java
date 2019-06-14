@@ -107,7 +107,7 @@ public class SpeechToText {
             com.google.cloud.dialogflow.v2.Intent.Message message =
                     com.google.cloud.dialogflow.v2.Intent.Message.getDefaultInstance().newBuilderForType().setText(text).build();
             if (!welcome)
-                activity.addMessages(new TextMessage(activity.getCurrentUser(), message));
+                activity.addMessages(new TextMessage(activity.getCurrentUser(), message, null));
 
             QueryInput queryInput = QueryInput.newBuilder().setText(TextInput.newBuilder()
                     .setText(recognitionText).setLanguageCode("es-ES")).build();
@@ -115,5 +115,9 @@ public class SpeechToText {
             new AsyncDialogflow(activity, DialogflowCredentials.getInstance().getSessionName(),
                     queryInput, DialogflowCredentials.getInstance().getSessionsClient()).execute();
         }
+    }
+
+    public void stopListening() {
+        recognizer.stopListening();
     }
 }
