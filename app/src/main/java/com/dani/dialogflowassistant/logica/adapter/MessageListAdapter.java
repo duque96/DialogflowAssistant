@@ -84,11 +84,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_message_received_card, parent, false);
                 return new ReceivedCardMessageHolder(view);
-            } else if (viewType == VIEW_TYPE_SUGGESTION_MESSAGE){
+            } else if (viewType == VIEW_TYPE_SUGGESTION_MESSAGE) {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_message_received_chip, parent, false);
                 return new ReceivedSuggestionMessageWithoutUserHolder(view);
-            }else if (viewType == VIEW_TYPE_TEXT_MESSAGE) {
+            } else if (viewType == VIEW_TYPE_TEXT_MESSAGE) {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_message_received_text, parent, false);
                 return new ReceivedTextMessageHolder(view);
@@ -155,7 +155,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         private void bind(Message message) {
-            messageText.setText(message.getMessage().getText().getText(0));
+            String formatedText =
+                    message.getMessage().getText().getText(0).substring(0, 1).toUpperCase() +
+                            message.getMessage().getText().getText(0).substring(1);
+            messageText.setText(formatedText);
 
             // Format the stored timestamp into a readable String using method.
             timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
@@ -198,7 +201,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT));
                 chip.setText(message.getMessage().getSuggestions().getSuggestions(i).getTitle());
-                chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.getContext(),R.color.colorMessageRecieved)));
+                chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.getContext(), R.color.colorMessageRecieved)));
                 chip.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
                 chip.setOnClickListener(new View.OnClickListener() {
                     @Override

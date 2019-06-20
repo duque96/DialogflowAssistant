@@ -3,13 +3,12 @@ package com.dani.dialogflowassistant.vista;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -40,6 +39,7 @@ import com.github.zagum.speechrecognitionview.RecognitionProgressView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.cloud.dialogflow.v2.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +60,6 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     private User currentUser;
     private User assistant;
 
-    //Mantener la pantalla encendida
-    private PowerManager.WakeLock wakelock;
-
     @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +68,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         //Evitar que la pantalla se apague
-        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        this.wakelock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
-        wakelock.acquire();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //Views
         speechRecognitionView = new SpeechRecognitionView(this);
@@ -189,6 +184,11 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
                 }
             }
         });
+
+        if (messageList.size() > 0 && messageList.get(messageList.size() - 1).getMessage().getMessageCase().equals(Intent.Message.MessageCase.SUGGESTIONS)) {
+            removeMessage(messageList.size() - 1);
+        }
+
         messageList.add(message);
 
         int newMsgPosition = messageList.size() - 1;
@@ -246,7 +246,6 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        this.wakelock.release();
         if (textToSpeech != null)
             textToSpeech.stopSpeaking();
     }
@@ -269,21 +268,20 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
         String text = ((Chip) v).getText().toString();
 
-        int position = messageList.size() - 1;
+        reconigzer.handleRecognizedText(text, false);
+    }
+
+    private void removeMessage(int position) {
         messageList.remove(position);
         mMessageAdapter.notifyItemRemoved(position);
         mMessageAdapter.notifyItemRangeChanged(position, messageList.size());
-
-        reconigzer.handleRecognizedText(text, false);
     }
 
     protected void onResume() {
         super.onResume();
-        wakelock.acquire();
     }
 
     public void onSaveInstanceState(Bundle icicle) {
         super.onSaveInstanceState(icicle);
-        this.wakelock.release();
     }
 }

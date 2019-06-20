@@ -1,9 +1,8 @@
 {
-  "latestVersion": "2.3",
-  "latestVersionCode": "7",
-  "url": "https://github.com/duque96/DialogflowAssistant/releases/download/v2.3/Dialogflow-v2.3.apk",
+  "latestVersion": "2.4",
+  "latestVersionCode": "8",
+  "url": "https://github.com/duque96/DialogflowAssistant/releases/download/v2.4/Dialogflow-v2.4.apk",
   "releaseNotes": [
-    "- Added Suggestios View",
-	"- Integrated with Zapiens"
+    "- Bugs fixed"
   ]
 }
