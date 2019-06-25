@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#153A54</color>
     <color name="colorPrimaryDark">#153A54</color>
-    <color name="colorAccent">#153A54</color>
+    <color name="colorAccent">#ffffff</color>
     <color name="colorMessageSent">#46A6D2</color>
     <color name="colorMessageRecieved">#98cfe6</color>
     <color name="white">#ffffff</color>

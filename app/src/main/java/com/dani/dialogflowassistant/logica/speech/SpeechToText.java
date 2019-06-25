@@ -1,6 +1,8 @@
 package com.dani.dialogflowassistant.logica.speech;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -97,7 +99,6 @@ public class SpeechToText {
         if (recognitionText.trim().isEmpty()) {
             Toast.makeText(activity, "No se ha detectado audio", Toast.LENGTH_SHORT).show();
         } else {
-
             String formatedText =
                     recognitionText.substring(0, 1).toUpperCase() + recognitionText.substring(1);
 

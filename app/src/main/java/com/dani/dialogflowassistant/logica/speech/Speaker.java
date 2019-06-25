@@ -81,4 +81,8 @@ public class Speaker {
             tts.stop();
         }
     }
+
+    public void shutDown() {
+        tts.shutdown();
+    }
 }

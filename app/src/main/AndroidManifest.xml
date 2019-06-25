@@ -16,14 +16,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".vista.LoginActivity"></activity>
-        <activity android:name=".vista.MainActivity">
+        <activity android:name=".vista.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".vista.MainActivity"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

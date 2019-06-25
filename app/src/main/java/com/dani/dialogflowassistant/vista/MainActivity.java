@@ -3,7 +3,10 @@ package com.dani.dialogflowassistant.vista;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
@@ -14,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,7 +43,6 @@ import com.github.zagum.speechrecognitionview.RecognitionProgressView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.cloud.dialogflow.v2.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
             }
         });
 
-        if (messageList.size() > 0 && messageList.get(messageList.size() - 1).getMessage().getMessageCase().equals(Intent.Message.MessageCase.SUGGESTIONS)) {
+        if (messageList.size() > 0 && messageList.get(messageList.size() - 1).getMessage().getMessageCase().equals(com.google.cloud.dialogflow.v2.Intent.Message.MessageCase.SUGGESTIONS)) {
             removeMessage(messageList.size() - 1);
         }
 
@@ -228,7 +231,12 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
     private void createWelcomeMessage() {
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.lightTransparent));
-        reconigzer.handleRecognizedText("Bienvenida", true);
+
+        SharedPreferences prefs = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+
+        String userId = Objects.requireNonNull(prefs.getString("userId", "userId")).trim();
+
+        reconigzer.handleRecognizedText("Bienvenida " + userId, true);
         ViewGroupUtils.micToSpeechView();
     }
 
@@ -246,8 +254,10 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (textToSpeech != null)
+        if (textToSpeech != null) {
             textToSpeech.stopSpeaking();
+            textToSpeech.shutDown();
+        }
     }
 
     @Override
@@ -283,5 +293,42 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
     public void onSaveInstanceState(Bundle icicle) {
         super.onSaveInstanceState(icicle);
+    }
+
+    public void logout(View view) {
+        final Activity activity = this;
+        reconigzer.stopListening();
+
+        final AlertDialog dialog = new AlertDialog.Builder(activity)
+                .setTitle(R.string.logoutDialogTitle)
+                .setMessage(R.string.logoutDialogDescription)
+                .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                        SharedPreferences prefs = activity.getSharedPreferences(
+                                getPackageName(), Context.MODE_PRIVATE);
+                        prefs.edit().remove("userId").apply();
+
+                        Intent intent = new Intent(activity, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert).create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(R.color.white);
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(activity,
+                        R.color.colorPrimary));
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.dialog_round, null));
+            }
+        });
+
+        dialog.show();
     }
 }

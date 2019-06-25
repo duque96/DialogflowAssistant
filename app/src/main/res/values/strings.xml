@@ -8,4 +8,11 @@
     <string name="card_subtitle">Subtítulo</string>
     <string name="card_button">Button</string>
     <string name="message_time">00:00</string>
+    <string name="login_unauthorized">Usuario y/o contraseña incorrectos</string>
+    <string name="login_error">Ha ocurrido un error durante el inicio de sesión. Vuelva a
+        intentarlo</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="logoutDialogTitle">Cerrar sesión</string>
+    <string name="logoutDialogDescription">¿Seguro que quiere cerrar la sesión?</string>
 </resources>
