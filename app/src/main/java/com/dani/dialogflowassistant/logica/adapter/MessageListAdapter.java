@@ -178,7 +178,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         private void bind(Message message) {
-            messageText.setText(message.getMessage().getText().getText(0));
+            String formatedText =
+                    message.getMessage().getText().getText(0).substring(0, 1).toUpperCase() +
+                            message.getMessage().getText().getText(0).substring(1);
+            messageText.setText(formatedText);
 
             // Format the stored timestamp into a readable String using method.
             timeText.setText(Utils.formatDateTime(message.getCreatedAt()));

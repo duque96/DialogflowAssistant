@@ -36,12 +36,16 @@ public class ResponseTypeManager {
                 case SUGGESTIONS:
                     responseType = new SuggestionResponse();
                     break;
+                case PAYLOAD:
+                    responseType = null;
+                    break;
                 default:
                     break;
             }
 
-            activity.addMessages(responseType.execute(queryResult, user, message,
-                    context));
+            if (responseType != null)
+                activity.addMessages(responseType.execute(queryResult, user, message,
+                        context));
         }
     }
 }

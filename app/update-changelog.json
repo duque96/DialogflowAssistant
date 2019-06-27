@@ -1,8 +1,8 @@
 {
-  "latestVersion": "2.4",
-  "latestVersionCode": "8",
-  "url": "https://github.com/duque96/DialogflowAssistant/releases/download/v2.4/Dialogflow-v2.4.apk",
+  "latestVersion": "2.5",
+  "latestVersionCode": "9",
+  "url": "https://github.com/duque96/DialogflowAssistant/releases/download/v2.5/Dialogflow-v2.5.apk",
   "releaseNotes": [
-    "- Bugs fixed"
+    "- Finished"
   ]
 }
