@@ -80,19 +80,6 @@
                     android:textColor="@color/colorPrimary" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/card_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="displayApp"
-                    android:text="@string/card_button"
-                    android:textColor="@color/colorPrimary"
-                    android:theme="@style/PrimaryFlatButton" />
-            </LinearLayout>
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

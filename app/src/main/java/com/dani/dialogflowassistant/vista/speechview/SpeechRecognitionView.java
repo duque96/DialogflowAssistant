@@ -42,12 +42,4 @@ public class SpeechRecognitionView {
     public RecognitionProgressView getView() {
         return recognitionProgressView;
     }
-
-    public void play() {
-        recognitionProgressView.play();
-    }
-
-    public void stop() {
-        recognitionProgressView.stop();
-    }
 }

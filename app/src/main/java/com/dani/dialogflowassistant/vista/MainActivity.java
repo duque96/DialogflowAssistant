@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dani.appupdateinstaller.AppUpdateInstaller;
 import com.dani.dialogflowassistant.BuildConfig;
 import com.dani.dialogflowassistant.R;
-import com.dani.dialogflowassistant.logica.actions.ButtonAction;
 import com.dani.dialogflowassistant.logica.adapter.MessageListAdapter;
 import com.dani.dialogflowassistant.logica.credentials.DialogflowCredentials;
 import com.dani.dialogflowassistant.logica.model.Message;
@@ -167,14 +166,6 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
                 reconigzer.recognizeSpeech();
             }
         }, 50);
-    }
-
-    /**
-     * @param view view
-     */
-    public void displayApp(View view) {
-        ButtonAction externalAppManager = new ButtonAction();
-        externalAppManager.action((String[]) view.getTag(), this);
     }
 
     public void addMessages(final Message message) {

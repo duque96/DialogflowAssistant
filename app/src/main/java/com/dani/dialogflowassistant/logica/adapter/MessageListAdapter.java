@@ -4,7 +4,6 @@ import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -219,7 +218,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private class ReceivedCardMessageHolder extends RecyclerView.ViewHolder {
         private TextView title, subtitle, timeText, nameText;
-        private Button button;
         private ImageView image;
 
         private ReceivedCardMessageHolder(View itemView) {
@@ -227,7 +225,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
             title = itemView.findViewById(R.id.card_title);
             subtitle = itemView.findViewById(R.id.card_subtitle);
-            button = itemView.findViewById(R.id.card_button);
             timeText = itemView.findViewById(R.id.card_message_time);
             nameText = itemView.findViewById(R.id.card_message_name);
             image = itemView.findViewById(R.id.card_image);
@@ -236,10 +233,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         private void bind(Message message) {
             title.setText(message.getMessage().getCard().getTitle());
             subtitle.setText(message.getMessage().getCard().getTitle());
-            button.setText(message.getMessage().getCard().getButtons(0).getText());
-
-            String[] extras = {message.getMessage().getCard().getButtons(0).getPostback()};
-            button.setTag(extras);
 
             new AsyncImageLoad(image).execute(message.getMessage().getCard().getImageUri());
 

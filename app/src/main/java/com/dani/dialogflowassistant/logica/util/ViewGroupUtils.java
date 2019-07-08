@@ -19,7 +19,7 @@ public class ViewGroupUtils {
         }
     }
 
-    public static void replaceView(View currentView, View newView) {
+    private static void replaceView(View currentView, View newView) {
         ViewGroup parent = getParent(currentView);
         if (parent == null) {
             return;
